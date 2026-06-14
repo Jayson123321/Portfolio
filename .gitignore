@@ -14,3 +14,16 @@ build/
 .env
 .env.local
 "@ | Out-File -FilePath .gitignore -Encoding utf8
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.local
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+"@ | Add-Content -Path .gitignore -Encoding utf8
