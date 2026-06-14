@@ -1,0 +1,16 @@
+@"
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build
+dist/
+build/
+
+# Env
+.env
+.env.local
+"@ | Out-File -FilePath .gitignore -Encoding utf8
