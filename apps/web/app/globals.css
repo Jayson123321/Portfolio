@@ -78,7 +78,7 @@ body {
 }
 
 /* Social buttons */
-.email, .linkedIn, .instagram {
+.email, .linkedIn, .instagram, .github {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +90,7 @@ body {
   transition: opacity 0.2s, transform 0.2s;
 }
 
-.email:hover, .linkedIn:hover, .instagram:hover {
+.email:hover, .linkedIn:hover, .instagram:hover, .github:hover {
   opacity: 0.85;
   transform: scale(1.05);
 }
@@ -98,6 +98,7 @@ body {
 .email { background: #ea4335; color: white; }
 .linkedIn { background: #0077b5; color: white; }
 .instagram { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); color: white; }
+.github { background: #ffffff; color: #24292e; }
 
 /* Blurred contact box */
 .blurred-container {
