@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0f172a;
+  --foreground: #f8fafc;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+}
+
+.sidebar a {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+}
+
+.sidebar a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar a.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.sidebar .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Typing animation — "Hi, my name is Jayson!" = 22 characters */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 22ch }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: white }
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 4px solid white;
+  animation:
+    typing 2s steps(22, end) forwards,
+    blink-caret 0.75s step-end infinite;
+}
+
+/* Social buttons */
+.email, .linkedIn, .instagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.email:hover, .linkedIn:hover, .instagram:hover {
+  opacity: 0.85;
+  transform: scale(1.05);
+}
+
+.email { background: #ea4335; color: white; }
+.linkedIn { background: #0077b5; color: white; }
+.instagram { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); color: white; }
+
+/* Blurred contact box */
+.blurred-container {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Horizontal timeline (work section) */
+.timeline-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 3rem 2rem;
+}
+
+.timeline-item {
+  flex: 0 0 auto;
+  max-width: 220px;
+}
+
+.timeline-connector {
+  flex: 0 0 60px;
+  height: 2px;
+  background: #3b82f6;
+  flex-shrink: 0;
+}
+
+.timeline-content {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  color: #cbd5e1;
 }
