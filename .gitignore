@@ -1,5 +1,4 @@
-@"
-# Dependencies
+﻿# Dependencies
 node_modules/
 
 # Next.js
@@ -13,4 +12,12 @@ build/
 # Env
 .env
 .env.local
-"@ | Out-File -FilePath .gitignore -Encoding utf8
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
