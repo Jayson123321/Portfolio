@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 db_password = os.getenv("DB_PASSWORD")
-engine = create_engine(f"postgresql://postgres:{db_password}@${"DB_HOST"}:5432/Jaysonportfolio", echo=True)
+db_host = os.getenv("DB_HOST", "db")
+engine = create_engine(f"postgresql://postgres:{db_password}@{db_host}:5432/Jaysonportfolio", echo=True)
 metadata=MetaData()
 
 projects = Table('projects_table', metadata,
