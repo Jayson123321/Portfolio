@@ -13,26 +13,24 @@ services:
         condition: service_healthy
 
   db:
+    container_name: portfolio-db
     image: postgres:16
     restart: always
-    user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
     environment:
       - POSTGRES_DB=Jaysonportfolio
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=postgres
     expose:
-      - 5432
+      - "5432"
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d Jaysonportfolio"]
       interval: 10s
       timeout: 5s
       retries: 5
-    adminer:
-      image: adminer
-      restart: always
-      ports:
-        - 8080:8080
 
 volumes:
   db-data:
