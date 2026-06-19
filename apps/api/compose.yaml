@@ -4,6 +4,10 @@ services:
       context: .
     ports:
       - 8000:8000
+    env_file:
+      - .env
+    volumes:
+      - .:/app
     depends_on:
       db:
         condition: service_healthy
@@ -24,6 +28,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8080:8080
 
 volumes:
   db-data:
