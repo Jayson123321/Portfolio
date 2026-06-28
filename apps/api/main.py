@@ -1,10 +1,11 @@
-﻿import os
+﻿from dataclasses import asdict
+import os
 import requests
 from dotenv import load_dotenv
 from models import ProjectModel
 from fastapi import FastAPI
 from sqlalchemy import insert, engine
-
+from tables import projects_table, engine
 load_dotenv() 
 
 app = FastAPI()
@@ -20,10 +21,13 @@ def get_github_repos():
     try:
         response = requests.get(github_base_url)
         data = response.json()
-        projects = [ProjectModel.from_github(repo) for repo in data]
+        projects = [ProjectModel.from_github(repo) for repo in data] 
+        projects_as_dict = [asdict(project) for project in projects]
         with engine.begin() as conn:
-            conn.execute(projects_table.insert(), projects)
+            conn.execute(projects_table.insert(), projects_as_dict)
 
     except Exception as e: 
         print(e)    
     return projects
+
+    

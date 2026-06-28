@@ -9,7 +9,7 @@ db_host = os.getenv("DB_HOST", "db")
 engine = create_engine(f"postgresql://postgres:{db_password}@{db_host}:5432/Jaysonportfolio", echo=True)
 metadata=MetaData()
 
-projects = Table('projects_table', metadata,
+projects_table = Table('projects_table', metadata,
     Column('id', Integer, primary_key=True),
     Column('name', String),
     Column('full_name', String),
