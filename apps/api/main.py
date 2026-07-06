@@ -17,7 +17,7 @@ def root():
     return {"message": "Portfolio API"}
 
 @app.get("/insert_projects")
-def get_github_repos():
+def insert_github_projects():
     try:
         response = requests.get(github_base_url)
         data = response.json()
@@ -29,5 +29,13 @@ def get_github_repos():
     except Exception as e: 
         print(e)    
     return projects
+
+@app.get("/projects")
+def get_projects():
+    with engine.begin() as conn:
+        result = conn.execute(projects_table.select())
+        projects = [ProjectModel(**row._mapping) for row in result]
+    return projects
+ 
 
     
