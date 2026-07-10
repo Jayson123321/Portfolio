@@ -26,5 +26,8 @@ projects_table = Table('projects_table', metadata,
     Column('visibility', String),
     Column('archived', Boolean),
     Column('size', Integer),
+    Column('commits', JSON),
+    Column('languages', JSON),
+    Column('readme', JSON)
 )
 metadata.create_all(engine)
