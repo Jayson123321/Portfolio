@@ -21,7 +21,10 @@ class ProjectModel:
     visibility: str = "public"
     archived: bool = False
     size: int = 0
-
+    commits: list = field(default_factory=list)
+    languages: dict = field(default_factory=dict)
+    readme: Optional[str] = None
+    
     @classmethod
     def from_github(cls, data: dict) -> "ProjectModel":
         return cls(

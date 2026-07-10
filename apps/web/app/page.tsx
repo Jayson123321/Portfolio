@@ -4,8 +4,70 @@ import TypeWriter from "../components/TypeWriter";
 import Sidebar from "../components/Sidebar";
 import profilePic from "./images/Pic1.jpg";
 
-export default function Home() {
-  return (
+interface Commit {
+  commit: {
+    message: string;
+    author: { date: string };
+  };
+}
+
+interface ReadmeData {
+  content?: string;
+  encoding?: string;
+  message?: string;
+}
+
+interface Project {
+  id: number;
+  name: string;
+  html_url: string;
+  description: string | null;
+  language: string | null;
+  stargazers_count: number;
+  topics: string[];
+  languages: Record<string, number> | null;
+  commits: Commit[] | null;
+  readme: ReadmeData | null;
+}
+
+async function getProjects(): Promise<Project[]> {
+  const apiUrl = process.env.API_URL ?? "http://localhost:8000";
+  try {
+    const res = await fetch(`${apiUrl}/projects`, { cache: "no-store" });
+    if (!res.ok) {
+      console.error(`[getProjects] API responded with ${res.status}`);
+      return [];
+    }
+    return res.json();
+  } catch (err) {
+    console.error("[getProjects] Fetch failed:", err);
+    return [];
+  }
+}
+
+function decodeReadme(readme: ReadmeData | null): string | null {
+  if (!readme?.content || readme.message) return null;
+  try {
+    const decoded = Buffer.from(readme.content.replace(/\n/g, ""), "base64").toString("utf-8");
+    const cleaned = decoded
+      .replace(/^#{1,6}\s+.*/gm, "")
+      .replace(/^>\s*/gm, "")
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/\*([^*]+)\*/g, "$1")
+      .replace(/`[^`]+`/g, "")
+      .replace(/^[-*+]\s+/gm, "")
+      .replace(/^---+$/gm, "")
+      .trim();
+    const firstParagraph = cleaned.split(/\n\n+/)[0].replace(/\n/g, " ").trim();
+    return firstParagraph.length > 10 ? firstParagraph.slice(0, 280) : null;
+  } catch {
+    return null;
+  }
+}
+
+export default async function Home() {
+  const projects = await getProjects();  return (
     <div className="min-h-screen">
       {/* Sidebar navigation */}
       <Sidebar />
@@ -202,32 +264,47 @@ export default function Home() {
       <section id="projects" className="px-8 lg:px-32 py-20">
         <h2 className="text-3xl font-extrabold text-white mb-12 text-center">Latest Projects</h2>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <div className="blurred-container p-6 rounded-xl">
-            <h3 className="text-lg font-bold text-white">Luca Stars – Text Based Adventure Game</h3>
-            <p className="mt-2 text-slate-400 text-sm">
-              Building a text based adventure game as a school project to practice object oriented programming.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {["Lit", "Express", "Node.js", "TypeScript", "MySQL"].map((tech) => (
-                <span key={tech} className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="blurred-container p-6 rounded-xl">
-            <h3 className="text-lg font-bold text-white">Luca Stars – Webshop</h3>
-            <p className="mt-2 text-slate-400 text-sm">
-              Building a webshop for delivered games, practicing object oriented programming and web technologies.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {["Lit", "Express", "Node.js", "TypeScript", "MySQL"].map((tech) => (
-                <span key={tech} className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
+          {projects.map((project) => {
+            const langTags = project.languages
+              ? Object.entries(project.languages).sort(([, a], [, b]) => b - a).slice(0, 5).map(([lang]) => lang)
+              : project.language ? [project.language] : [];
+            const recentCommits = Array.isArray(project.commits) ? project.commits.slice(0, 3) : [];
+            const readmeText = decodeReadme(project.readme);
+            const description = project.description ?? readmeText ?? "No description available.";
+            return (
+              <a
+                key={project.id}
+                href={project.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="blurred-container p-6 rounded-xl hover:bg-white/5 transition block"
+              >
+                <h3 className="text-lg font-bold text-white">{project.name}</h3>
+                <p className="mt-2 text-slate-400 text-sm">{description}</p>
+                {langTags.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {langTags.map((tag) => (
+                      <span key={tag} className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {recentCommits.length > 0 && (
+                  <div className="mt-4 border-t border-white/10 pt-3">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Recent commits</p>
+                    <div className="space-y-1">
+                      {recentCommits.map((c, i) => (
+                        <p key={i} className="text-xs text-slate-400 truncate">
+                          · {c.commit.message.split("\n")[0]}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </a>
+            );
+          })}
         </div>
       </section>
     </div>
