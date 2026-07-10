@@ -116,7 +116,7 @@ export default async function Home() {
           <div className="w-full md:w-96 shrink-0 rounded-xl shadow overflow-hidden ">
             <div className="p-5">
               <p className="text-base text-slate-200 font-sans mb-2">
-                My name is Jayson Haverkamp, 21 years old, born in Enschede, and half Dutch and half Filipino.
+                My name is Jayson Haverkamp, 23 years old, born in Enschede, and half Dutch and half Filipino.
                 Currently pursuing my bachelor&apos;s degree in software engineering.
               </p>
               <p className="text-base text-slate-200 font-sans">
