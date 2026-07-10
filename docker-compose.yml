@@ -36,7 +36,8 @@ services:
       API_URL: http://api:8000
     volumes:
       - ./apps/web:/usr/src/app
-      - /usr/src/app/node_modules
+      - /usr/src/app/node_modules  
+      - /usr/src/app/.next
     depends_on:
       - api
 
