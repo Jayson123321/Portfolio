@@ -1,13 +1,15 @@
-from sqlalchemy import create_engine, insert, Table, Column, Integer, String, Boolean, JSON, MetaData
+from sqlalchemy import create_engine, Table, Column, Integer, String, Boolean, JSON, MetaData, text
+from pgvector.sqlalchemy import Vector
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 db_password = os.getenv("DB_PASSWORD")
-db_host = os.getenv("DB_HOST", "db")
-engine = create_engine(f"postgresql://postgres:{db_password}@{db_host}:5432/Jaysonportfolio", echo=True)
-metadata=MetaData()
+db_host = os.getenv("DB_HOST", "localhost")
+db_port = os.getenv("DB_PORT", "5433")
+engine = create_engine(f"postgresql://postgres:{db_password}@{db_host}:{db_port}/Jaysonportfolio", echo=True)
+metadata = MetaData()
 
 projects_table = Table('projects_table', metadata,
     Column('id', Integer, primary_key=True),
@@ -30,4 +32,14 @@ projects_table = Table('projects_table', metadata,
     Column('languages', JSON),
     Column('readme', JSON)
 )
+
+portfolio_embeddings = Table('portfolio_embeddings', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('text_content', String, nullable=False),
+    Column('embedding', Vector(768))
+)
+
+with engine.begin() as conn:
+    conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+
 metadata.create_all(engine)
