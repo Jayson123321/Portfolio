@@ -3,7 +3,10 @@ import os
 import requests
 from dotenv import load_dotenv
 from models import ProjectModel
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from sqlalchemy import insert, text
 from tables import projects_table, engine
 from pydantic import BaseModel
@@ -11,7 +14,10 @@ from google import genai
 
 load_dotenv()
 
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 client = genai.Client()
 github_base_url = os.getenv("GITHUB_BASE_URL")
 github_repo_url = os.getenv("GITHUB_REPOS_URL")
@@ -73,11 +79,12 @@ def get_projects():
     return projects
 
 @app.post("/api/chat")
-def chat_with_assistant(request: ChatRequest):
+@limiter.limit("10/minute")
+def chat_with_assistant(request: Request, body: ChatRequest):
     try:
         embedding_response = client.models.embed_content(
             model="gemini-embedding-2",
-            contents=request.message,
+            contents=body.message,
             config={"output_dimensionality": 768}
         )
         query_vector = embedding_response.embeddings[0].values
@@ -117,8 +124,8 @@ def chat_with_assistant(request: ChatRequest):
         )
 
         history_text = ""
-        if request.history:
-            recent = request.history[-6:]
+        if body.history:
+            recent = body.history[-6:]
             history_text = "\nGesprekgeschiedenis:\n" + "\n".join([
                 f"{'Bezoeker' if msg.role == 'user' else 'Assistent'}: {msg.text}"
                 for msg in recent
@@ -126,7 +133,7 @@ def chat_with_assistant(request: ChatRequest):
 
         ai_response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=f"Context uit Jayson's database:\n{context}\n{history_text}\nVraag van de bezoeker: {request.message}",
+            contents=f"Context uit Jayson's database:\n{context}\n{history_text}\nVraag van de bezoeker: {body.message}",
             config={"system_instruction": system_instruction}
         )
 
