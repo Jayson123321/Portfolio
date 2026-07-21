@@ -26,6 +26,8 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./apps/api:/app
     depends_on:
