@@ -11,6 +11,7 @@ from sqlalchemy import insert, text
 from tables import projects_table, engine
 from pydantic import BaseModel
 from google import genai
+from google.genai import types
 
 load_dotenv()
 
@@ -123,17 +124,18 @@ def chat_with_assistant(request: Request, body: ChatRequest):
             "Als een vraag helemaal niks met Jayson te maken heeft, geef dan een korte, vriendelijke afwijzing."
         )
 
-        history_text = ""
-        if body.history:
-            recent = body.history[-6:]
-            history_text = "\nGesprekgeschiedenis:\n" + "\n".join([
-                f"{'Bezoeker' if msg.role == 'user' else 'Assistent'}: {msg.text}"
-                for msg in recent
-            ]) + "\n"
+        contents = []
+        for msg in body.history[-6:]:
+            role = "user" if msg.role == "user" else "model"
+            contents.append(types.Content(role=role, parts=[types.Part(text=msg.text)]))
+        contents.append(types.Content(
+            role="user",
+            parts=[types.Part(text=f"Context uit Jayson's database:\n{context}\n\nVraag: {body.message}")]
+        ))
 
         ai_response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=f"Context uit Jayson's database:\n{context}\n{history_text}\nVraag van de bezoeker: {body.message}",
+            contents=contents,
             config={"system_instruction": system_instruction}
         )
 
