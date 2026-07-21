@@ -9,7 +9,7 @@ Tijdens mijn mbo-opleiding liep ik stage bij Allinq, waar ik op Schiphol aan de 
 Hoewel de focus hier op de fysieke en beheerkant van netwerken lag, wist ik na het afronden van de opleiding dat ik een andere richting op wilde: ik wilde zelf applicaties leren bouwen en software-oplossingen creëren. Die drang om te programmeren heeft mij geleid naar de specialisatie in Software Development, wat uiteindelijk de perfecte springplank bleek te zijn naar AI Engineering.
 
 # Het Responsible AI Semester en AI Engineering
-Als AI Engineer in opleiding heb ik het 'Responsible AI' semester succesvol gevolgd. Hier heb ik diepgaande kennis opgedaan over hoe je AI-systemen bouwt die niet alleen technisch krachtig zijn, maar ook ethisch, transparant, eerlijk en safe voor de eindgebruiker. Deze principes pas ik direct toe in de projecten die ik bouw.
+Ik studeer momenteel aan de Hogeschool van Amsterdam (HvA) aan de opleiding HBO ICT met specialisatie AI Engineering. Als AI Engineer in opleiding heb ik het 'Responsible AI' semester succesvol gevolgd. Hier heb ik diepgaande kennis opgedaan over hoe je AI-systemen bouwt die niet alleen technisch krachtig zijn, maar ook ethisch, transparant, eerlijk en safe voor de eindgebruiker. Deze principes pas ik direct toe in de projecten die ik bouw.
 
 # Mijn Passie: Wat mij energie geeft
 Wat mij de meeste energie geeft, is het continu leren van gloednieuwe AI-technologieën en andere opkomende tech. De ontwikkelingen in het AI-veld gaan razendsnel, en ik vind het geweldig om met de nieuwste tools en frameworks te experimenteren om innovatieve oplossingen te bouwen.

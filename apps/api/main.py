@@ -24,8 +24,13 @@ REPO_BLACKLIST = {
     "wikidata"
 }
 
+class HistoryMessage(BaseModel):
+    role: str
+    text: str
+
 class ChatRequest(BaseModel):
     message: str
+    history: list[HistoryMessage] = []
 
 @app.get("/")
 def root():
@@ -109,9 +114,17 @@ def chat_with_assistant(request: ChatRequest):
             "Als een vraag helemaal niks met Jayson te maken heeft, geef dan een korte, vriendelijke afwijzing met een suggestie wat ze wél kunnen vragen."
         )
 
+        history_text = ""
+        if request.history:
+            recent = request.history[-6:]
+            history_text = "\nGesprekgeschiedenis:\n" + "\n".join([
+                f"{'Bezoeker' if msg.role == 'user' else 'Assistent'}: {msg.text}"
+                for msg in recent
+            ]) + "\n"
+
         ai_response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=f"Context uit Jayson's database:\n{context}\n\nVraag van de bezoeker: {request.message}",
+            contents=f"Context uit Jayson's database:\n{context}\n{history_text}\nVraag van de bezoeker: {request.message}",
             config={"system_instruction": system_instruction}
         )
 
