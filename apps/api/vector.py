@@ -10,7 +10,7 @@ load_dotenv()
 
 client = genai.Client()
 
-file_path = r"C:\Users\Jayso\OneDrive\Documenten\portfolio\github_projects\Portfolio\apps\api\personalisized-data\about_me.md"
+file_path = os.path.join(os.path.dirname(__file__), "personalisized-data", "about_me.md")
 
 if not os.path.exists(file_path):
     raise FileNotFoundError(f"Kan het bestand niet vinden op: {file_path}")
