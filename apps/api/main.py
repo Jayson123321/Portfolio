@@ -13,7 +13,6 @@ load_dotenv()
 
 app = FastAPI()
 client = genai.Client()
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://host.docker.internal:11434")
 github_base_url = os.getenv("GITHUB_BASE_URL")
 github_repo_url = os.getenv("GITHUB_REPOS_URL")
 github_token = os.getenv("GITHUB_ACCESS_TOKEN")
@@ -110,22 +109,14 @@ def chat_with_assistant(request: ChatRequest):
             "Als een vraag helemaal niks met Jayson te maken heeft, geef dan een korte, vriendelijke afwijzing met een suggestie wat ze wél kunnen vragen."
         )
 
-        ollama_response = requests.post(
-            f"{OLLAMA_URL}/api/chat",
-            json={
-                "model": "gemma4:31b-cloud",
-                "messages": [
-                    {"role": "system", "content": system_instruction},
-                    {"role": "user", "content": f"Context uit Jayson's database:\n{context}\n\nVraag van de bezoeker: {request.message}"}
-                ],
-                "stream": False
-            },
-            timeout=60
+        ai_response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"Context uit Jayson's database:\n{context}\n\nVraag van de bezoeker: {request.message}",
+            config={"system_instruction": system_instruction}
         )
-        ollama_response.raise_for_status()
 
         return {
-            "reply": ollama_response.json()["message"]["content"],
+            "reply": ai_response.text,
             "sources_used": len(result)
         }
 
