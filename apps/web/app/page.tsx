@@ -2,6 +2,7 @@ import Image from "next/image";
 import MapWrapper from "../components/MapWrapper";
 import TypeWriter from "../components/TypeWriter";
 import Sidebar from "../components/Sidebar";
+import Chat from "../components/Chat";
 import profilePic from "./images/Pic1.jpg";
 
 interface Commit {
@@ -71,6 +72,9 @@ export default async function Home() {
     <div className="min-h-screen">
       {/* Sidebar navigation */}
       <Sidebar />
+
+      {/* Chat widget */}
+      <Chat />
 
       {/* About Me */}
       <section id="aboutMe" className="min-h-screen relative flex flex-col justify-center px-8 lg:px-32 py-20">
